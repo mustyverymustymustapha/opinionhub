@@ -1,142 +1,103 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const loginScreen = document.getElementByID("login-screen");
-    const mainContent = document.getElementByID("main-content");
-    const loginForm = document.getElementByID("login-form");
-    const usernameInput = document.getElementByID("username");
-    const pollForm = document.getElementByID("poll-form");
-    const pollsContainer = document.getElementByID("polls-container");
-    const addOptionBtn = document.getElementByID("add-option-btn");
+ document.addEventListener("DOMContentLoaded", () => {
+  const loginScreen = document.getElementById("login-screen");
+  const mainContent = document.getElementById("main-content");
+  const loginForm = document.getElementById("login-form");
+  const usernameInput = document.getElementById("username");
+  const pollForm = document.getElementById("poll-form");
+  const pollQuestionInput = document.getElementById("poll-question");
+  const optionsContainer = document.getElementById("options");
+  const addOptionBtn = document.getElementById("add-option-btn");
+  const pollsContainer = document.getElementById("polls-container");
 
-    const POLLS_KEY = "opinionHubPolls";
-    const VOTES_KEY = "opinionHubVotes";
-    const USERNAME_KEY = "opinionHubUsername";
+  const USERNAME_KEY = "opinionHubUsername";
+  const POLLS_KEY = "opinionHubPolls";
 
-    // Anti Swearing Thingy
-    const PROFANITY_API_URL = "https://www.purgomalum.com/service/containsprofanity?text=";
+  const loadUsername = () => localStorage.getItem(USERNAME_KEY);
+  const saveUsername = (username) => localStorage.setItem(USERNAME_KEY, username);
+  const loadPolls = () => JSON.parse(localStorage.getItem(POLLS_KEY)) || [];
+  const savePolls = (polls) => localStorage.setItem(POLLS_KEY, JSON.stringify(polls));
 
-    const loadUsername = () => localStorage.getItem(USERNAME_KEY);
-    const saveUsername = (username) => localStorage.setItem(USERNAME_KEY, username);
+  const displayPolls = () => {
+    pollsContainer.innerHTML = "";
+    const polls = loadPolls();
+    polls.forEach((poll, pollIndex) => {
+      const pollElement = document.createElement("div");
+      pollElement.className = "poll";
+      const pollQuestion = document.createElement("h3");
+      pollQuestion.textContent = poll.question;
+      pollElement.appendChild(pollQuestion);
+      const optionsList = document.createElement("ul");
+      poll.options.forEach((option, optionIndex) => {
+        const optionItem = document.createElement("li");
+        const optionButton = document.createElement("button");
+        optionButton.textContent = `${option.text} (${option.votes} votes)`;
+        optionButton.addEventListener("click", () => {
+          polls[pollIndex].options[optionIndex].votes++;
+          savePolls(polls);
+          displayPolls();
+        });
+        optionItem.appendChild(optionButton);
+        optionsList.appendChild(optionItem);
+      });
+      pollElement.appendChild(optionsList);
+      pollsContainer.appendChild(pollElement);
+    });
+  };
 
-    const loadPolls = () => JSON.parse(localStorage.getItem(POLLS_KEY)) || []
-    const savePolls = (polls) => localStorage.setItem(POLLS_KEY, JSON.stringify(polls));
-
-    const loadVotes = () => JSON.parse(localStorage.getItem(VOTES_KEY)) || {};
-    const saveVotes = (votes) => localStorage.setItem(VOTES_KEY, JSON.stringify(votes));
-
-    const checkProfanity = async (text) => {
-        const response = await fetch(PROFANITY_API_URL = encodeURIComponent(text));
-        const data = await response.text();
-        return data === "true";
-    };
-
-    const renderPolls = () => {
-        const polls = loadPolls();
-        const votes = loadVotes();
-        pollsContainer.innerHTML = "";
-
-        polls.forEach((poll) => {
-            const pollDiv = document.createElement("div");
-            pollDiv.classList.add("poll");
-
-            const userVoted = votes[poll.id];
-// WARNING: NUCLEAR MESS OF CODE DOWN
- pollDiv.innerHTML = `
-        <h3>${poll.question} <span>(by ${poll.creator})</span></h3>
-        <ul>
-          ${poll.options
-            .map(
-              (option, i) => `
-            <li>
-              ${userVoted ? `
-                <span>${option.text}: ${option.votes} votes</span>
-              ` : `
-                <button data-poll-id="${poll.id}" data-option-index="${i}">
-                  ${option.text}
-                </button>
-              `}
-            </li>
-          `
-            )
-            .join("")}
-        </ul>
-      `;
-pollsContainer.appendChild(pollDiv);
-})}})
-
-addOptionBtn.addEventListener("click", () => {
-    const optionsDiv = document.getElementByID("options");
-    const input = document.createElement("input");
-    input.type = "text";
-    input.classList.add("poll-option");
-    input.placeholder = `Option ${optionsDiv.children.length + 1}`;
-    input.required = false;
-    optionsDiv.appendChild(input);
-});
-
-pollForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const question = document.getElementByID("poll-question").value;
-    const options = [...document.querySelectorAll(".poll-option")].map((input) => ({
-        text:input.value,
-        votes: 0,
-    }));
-
-    if (await checkProfanity(question)) {
-        alert("Profanity was found in your question. Please change it!!");
-        return;
-    }
-
-    for (const option of options) {
-        if (await checkProfanity(option.text)) {
-            alert("Profanity was found in an option. Please change the option(s)!!");
-        return;
-    }
-}
-
-const polls = loadPolls();
-polls.push({ id: Date.now(), question, options, creator: loadUsername() });
-savePolls(polls);
-
-pollForm.reset();
-document.getElementByID("options").innerHTML = `
-<input type="text" class="poll-option" placeholder="Option 1" required>
-<input type="text" class="poll-option" placeholder="Option 2" required>
-`;
-
-renderPolls();
-});
-
-pollsContainer.addEventListener("click", (e) => {
-    if (e.target.tagName === "BUTTON") {
-        const pollId = e.target.dataset.pollId;
-        const optionIndex = e.target.dataset.optionIndex;
-
-        const polls = loadPolls();
-        const votes = loadVotes();
-
-        const poll = polls.find((p) => p.id == pollId);
-        poll.options[optionIndex].votes++;
-        savePolls(polls);
-
-        renderPolls();
-    }
-});
-
-loginForm.addEventListener("submit", (e) => {
+  loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const username = usernameInput.value.trim();
     if (username) {
-        saveUsername(username);
-        loginScreen.style.display = "none";
-        mainContent.style.display = "block";
-        renderPolls();
+      saveUsername(username);
+      loginScreen.style.display = "none";
+      mainContent.style.display = "block";
+      displayPolls();
+    } else {
+      alert("Please enter a valid name!");
     }
-});
+  });
 
-const username = loadUsername();
-if (username) {
+  pollForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const question = pollQuestionInput.value.trim();
+    const options = Array.from(optionsContainer.getElementsByClassName("poll-option"))
+      .map((input) => input.value.trim())
+      .filter((value) => value !== "")
+      .map((text) => ({ text, votes: 0 }));
+    if (question && options.length >= 2) {
+      const polls = loadPolls();
+      polls.push({ question, options });
+      savePolls(polls);
+      pollQuestionInput.value = "";
+      optionsContainer.innerHTML = `
+        <input type="text" class="poll-option" placeholder="Option 1" required>
+        <input type="text" class="poll-option" placeholder="Option 2" required>
+      `;
+      displayPolls();
+    } else {
+      alert("Please enter a question and at least two options.");
+    }
+  });
+
+  addOptionBtn.addEventListener("click", () => {
+    const optionCount = optionsContainer.getElementsByClassName("poll-option").length;
+    if (optionCount < 5) {
+      const newOption = document.createElement("input");
+      newOption.type = "text";
+      newOption.className = "poll-option";
+      newOption.placeholder = `Option ${optionCount + 1}`;
+      optionsContainer.appendChild(newOption);
+    } else {
+      alert("You can add up to 5 options only.");
+    }
+  });
+
+  const username = loadUsername();
+  if (username) {
     loginScreen.style.display = "none";
     mainContent.style.display = "block";
-    renderPolls();
-}
+    displayPolls();
+  }
+});
+
 // Now for the CSS, I wrote this badly and now I have to go back and forth in the files to make the CSS work
