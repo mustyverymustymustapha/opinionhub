@@ -1,0 +1,41 @@
+<!--I'm not used to VS Code so there might be strange ways I type my code-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>OpinionHub.com ~ Share and Vote!!!</title>
+        <link rel="stylesheet" href="styles.css">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        
+        <div id="login-screen">
+            <h1>Welcome to my website, OpinionHub.com</h1>
+            <p>Please enter your name to begin.</p>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Enter your name" required>
+                <button type="submit">Start</button>
+            </form>
+        </div>
+
+        <div id="main-content" style="display:none;">
+            <h2>Create a Poll</h2>
+            <form id="poll-form">
+                <input type="text" id="poll-question" placeholder="What's your question?" required>
+                <div id="options">
+                    <input type="text" class="poll-option" placeholder="Option 1" required>
+                    <input type="text" class="poll-option" placeholder="Option 2" required>
+                </div>
+                <button type="submit">Create Poll</button>
+            </form>
+
+            <button id="add-option-btn">Add Option</button>
+
+            <h3>Your Polls</h3>
+            <div id="polls-container"></div>
+        </div>
+
+        <script src="app.js" defer></script>
+    </body>
+</html>

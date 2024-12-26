@@ -1,0 +1,128 @@
+/* I used an idea board to plan out my CSS, hope you like it! */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+h1, h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(to right, #2575fc, #6a11cb);
+    transform: scale(1.05);
+}
+
+input[type="text"] {
+    padding: 10px;
+    margin: 10px auto;
+    display: block;
+    font-size: 16px;
+    width: 90%;
+    max-width: 400px;
+    border: 2px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+input[type="text"]:focus {
+    border-color: #6a11cb;
+}
+
+form {
+    margin: 20px auto;
+    text-align: center;
+}
+
+#login-screen {
+    padding: 50px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    margin: 100px auto;
+    border-radius: 25px;
+}
+
+#main-content {
+    padding: 20px;
+}
+
+#polls-container {
+    margin-top: 20px;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.poll {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.poll:hover {
+    transform: translateY(-5px);
+}
+
+.poll h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.poll ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.poll li {
+    margin: 10px 0;
+}
+
+.poll li button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.poll li button:hover {
+    background: linear-gradient(to right, #feb47b, #ff7e5f);
+    transform: scale(1.02);
+}
+
+.poll li span {
+    display: block;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+}
