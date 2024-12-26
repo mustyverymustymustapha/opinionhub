@@ -40,26 +40,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const userVoted = votes[poll.id];
 // WARNING: NUCLEAR MESS OF CODE DOWN
-            pollDiv.innerHTML = `
-            <h3>${poll.question} <span>(by ${poll.creator})</span></h3>
-            <ul>
-            ${poll.options
-                .map(
-                (option, i) => `
-                <li>
-                ${userVoted ? `
+ pollDiv.innerHTML = `
+        <h3>${poll.question} <span>(by ${poll.creator})</span></h3>
+        <ul>
+          ${poll.options
+            .map(
+              (option, i) => `
+            <li>
+              ${userVoted ? `
                 <span>${option.text}: ${option.votes} votes</span>
-                `: `
-                <button data-poll-id="${poll-id}" data-option-index="${i}">
-                ${option.text}
+              ` : `
+                <button data-poll-id="${poll.id}" data-option-index="${i}">
+                  ${option.text}
                 </button>
-                `}
-                </li>
-            ` 
-        )
-        .join("")}
+              `}
+            </li>
+          `
+            )
+            .join("")}
         </ul>
-    `;
+      `;
 pollsContainer.appendChild(pollDiv);
 })}})
 
